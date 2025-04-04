@@ -20,46 +20,48 @@ name = "gen_config"
 path = "tools/gen_config.rs"
 
 [dependencies]
-anyhow = "1" # 错误处理
-async-trait = "0.1" # 异步 async trait
-bytes = "1" # 高效处理网络 buffer 的库
-certify = "0.4" # 创建 x509 cert
-dashmap = "5" # 并发 HashMap
-flate2 = "1" # gzip 压缩
-futures = "0.3" # 提供 Stream trait
-http = "0.2" # 我们使用 HTTP status code 所以引入这个类型库
-opentelemetry-jaeger = "0.16" # opentelemetry jaeger 支持
-prost = "0.9" # 处理 protobuf 的代码
-rustls-native-certs = "0.5" # 加载本机信任证书
-s2n-quic = "1"
-serde = { version = "1", features = ["derive"] } # 序列化/反序列化
-sled = "0.34" # sled db
-thiserror = "1" # 错误定义和处理
-tokio = { version = "1", features = ["full"] } # 异步网络库
-tokio-rustls = "0.22" # 处理 TLS
-tokio-stream = { version = "0.1", features = ["sync"] } # 处理 stream
-tokio-util = { version = "0.7", features = ["compat"] } # tokio 和 futures 的兼容性库
-toml = "0.5" # toml 支持
-tracing = "0.1" # 日志处理
-tracing-appender = "0.2" # 文件日志
-tracing-opentelemetry = "0.17" # opentelemetry 支持
-tracing-subscriber = { version = "0.3", features = [
+anyhow = "1.0.80" # 错误处理
+async-trait = "0.1.77" # 异步 async trait
+bytes = "1.5.0" # 高效处理网络 buffer 的库
+certify = "0.4.0" # 创建 x509 cert
+dashmap = "5.5.3" # 并发 HashMap
+flate2 = "1.0.28" # gzip 压缩
+futures = "0.3.30" # 提供 Stream trait
+http = "0.2.11" # 我们使用 HTTP status code 所以引入这个类型库
+opentelemetry-jaeger = "0.16.0" # opentelemetry jaeger 支持
+prost = "0.12.4" # 处理 protobuf 的代码
+rustls-native-certs = "0.5.0" # 加载本机信任证书
+s2n-quic = "1.0.0"
+serde = { version = "1.0.197", features = ["derive"] } # 序列化/反序列化
+sled = "0.34.7" # sled db
+thiserror = "1.0.57" # 错误定义和处理
+tokio = { version = "1.36.0", features = ["full"] } # 异步网络库
+tokio-rustls = "0.22.0" # 处理 TLS
+tokio-stream = { version = "0.1.14", features = ["sync"] } # 处理 stream
+tokio-util = { version = "0.7.10", features = [
+	"compat",
+] } # tokio 和 futures 的兼容性库
+toml = "0.8.10" # toml 支持
+tracing = "0.1.40" # 日志处理
+tracing-appender = "0.2.3" # 文件日志
+tracing-opentelemetry = "0.17.0" # opentelemetry 支持
+tracing-subscriber = { version = "0.3.18", features = [
 	"json",
 	"env-filter",
 ] } # 日志处理
-yamux = "0.10" # yamux 多路复用支持
+yamux = "0.10.0" # yamux 多路复用支持
 
 [dev-dependencies]
-criterion = { version = "0.3", features = [
+criterion = { version = "0.5.1", features = [
 	"async_futures",
 	"async_tokio",
 	"html_reports",
 ] } # benchmark
-rand = "0.8" # 随机数处理
-tempfile = "3" # 处理临时目录和临时文件
+rand = "0.8.5" # 随机数处理
+tempfile = "3.10.0" # 处理临时目录和临时文件
 
 [build-dependencies]
-prost-build = "0.9" # 编译 protobuf
+prost-build = "0.12.4" # 编译 protobuf
 
 [[bench]]
 name = "pubsub"
