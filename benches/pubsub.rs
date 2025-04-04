@@ -1,10 +1,10 @@
 use anyhow::Result;
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 use futures::StreamExt;
 use rand::prelude::SliceRandom;
 use simple_kv::{
-    start_server_with_config, start_yamux_client_with_config, AppStream, ClientConfig,
-    CommandRequest, ServerConfig, StorageConfig, YamuxCtrl,
+    AppStream, ClientConfig, CommandRequest, ServerConfig, StorageConfig, YamuxCtrl,
+    start_server_with_config, start_yamux_client_with_config,
 };
 use std::time::Duration;
 use tokio::net::TcpStream;
@@ -12,7 +12,7 @@ use tokio::runtime::Builder;
 use tokio::time;
 use tokio_rustls::client::TlsStream;
 use tracing::{info, span};
-use tracing_subscriber::{layer::SubscriberExt, prelude::*, EnvFilter};
+use tracing_subscriber::{EnvFilter, layer::SubscriberExt, prelude::*};
 
 async fn start_server() -> Result<()> {
     let addr = "127.0.0.1:9999";
@@ -20,9 +20,25 @@ async fn start_server() -> Result<()> {
     config.general.addr = addr.into();
     config.storage = StorageConfig::MemTable;
 
+    // 创建一个通道来通知服务器已启动
+    let (tx, mut rx) = tokio::sync::mpsc::channel(1);
+
+    // 启动服务器任务
     tokio::spawn(async move {
-        start_server_with_config(&config).await.unwrap();
+        // 启动服务器
+        let result = start_server_with_config(&config).await;
+
+        // 通知服务器已启动或失败
+        let _ = tx.send(result).await;
     });
+
+    // 等待服务器启动信号
+    rx.recv()
+        .await
+        .ok_or_else(|| anyhow::anyhow!("Server failed to start"))??;
+
+    // 给服务器一些时间完全启动
+    tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
 
     Ok(())
 }

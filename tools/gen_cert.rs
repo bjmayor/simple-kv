@@ -1,5 +1,5 @@
 use anyhow::Result;
-use certify::{generate_ca, generate_cert, load_ca, CertType, CA};
+use certify::{CA, CertSigAlgo, CertType, generate_ca, generate_cert};
 use tokio::fs;
 
 struct CertPem {
@@ -12,7 +12,7 @@ struct CertPem {
 async fn main() -> Result<()> {
     let pem = create_ca()?;
     gen_files(&pem).await?;
-    let ca = load_ca(&pem.cert, &pem.key)?;
+    let ca = CA::load(&pem.cert, &pem.key)?;
     let pem = create_cert(&ca, &["kvserver.acme.inc"], "Acme KV server", false)?;
     gen_files(&pem).await?;
     let pem = create_cert(&ca, &[], "awesome-device-id", true)?;
@@ -22,10 +22,10 @@ async fn main() -> Result<()> {
 
 fn create_ca() -> Result<CertPem> {
     let (cert, key) = generate_ca(
-        &["acme.inc"],
         "CN",
+        "acme.inc",
         "Acme Inc.",
-        "Acme CA",
+        CertSigAlgo::ED25519,
         None,
         Some(10 * 365),
     )?;
@@ -42,7 +42,17 @@ fn create_cert(ca: &CA, domains: &[&str], cn: &str, is_client: bool) -> Result<C
     } else {
         (Some(5 * 365), CertType::Server)
     };
-    let (cert, key) = generate_cert(ca, domains, "CN", "Acme Inc.", cn, None, is_client, days)?;
+    let (cert, key) = generate_cert(
+        ca,
+        domains.into_iter().map(|s| s.to_string()).collect(),
+        "CN",
+        "Acme Inc.",
+        cn,
+        CertSigAlgo::ED25519,
+        None,
+        is_client,
+        days,
+    )?;
 
     Ok(CertPem {
         cert_type,

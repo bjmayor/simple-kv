@@ -2,12 +2,12 @@ use std::io::Cursor;
 use std::sync::Arc;
 
 use tokio::io::{AsyncRead, AsyncWrite};
-use tokio_rustls::rustls::{internal::pemfile, Certificate, ClientConfig, ServerConfig};
-use tokio_rustls::rustls::{AllowAnyAuthenticatedClient, NoClientAuth, PrivateKey, RootCertStore};
-use tokio_rustls::webpki::DNSNameRef;
 use tokio_rustls::TlsConnector;
+use tokio_rustls::rustls::{AllowAnyAuthenticatedClient, NoClientAuth, PrivateKey, RootCertStore};
+use tokio_rustls::rustls::{Certificate, ClientConfig, ServerConfig, internal::pemfile};
+use tokio_rustls::webpki::DNSNameRef;
 use tokio_rustls::{
-    client::TlsStream as ClientTlsStream, server::TlsStream as ServerTlsStream, TlsAcceptor,
+    TlsAcceptor, client::TlsStream as ClientTlsStream, server::TlsStream as ServerTlsStream,
 };
 use tracing::instrument;
 
