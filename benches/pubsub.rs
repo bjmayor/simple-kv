@@ -1,7 +1,7 @@
 use anyhow::Result;
 use criterion::{Criterion, criterion_group, criterion_main};
 use futures::StreamExt;
-use rand::prelude::SliceRandom;
+use rand::prelude::*;
 use simple_kv::{
     AppStream, ClientConfig, CommandRequest, ServerConfig, StorageConfig, YamuxCtrl,
     start_server_with_config, start_yamux_client_with_config,
@@ -67,7 +67,7 @@ async fn start_subscribers(topic: &'static str) -> Result<()> {
 }
 
 async fn start_publishers(topic: &'static str, values: &'static [&'static str]) -> Result<()> {
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     let v = values.choose(&mut rng).unwrap();
 
     let mut ctrl = connect().await.unwrap();
