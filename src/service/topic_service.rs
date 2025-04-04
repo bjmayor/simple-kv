@@ -1,4 +1,4 @@
-use futures::{stream, Stream};
+use futures::{Stream, stream};
 use std::{pin::Pin, sync::Arc};
 use tokio_stream::wrappers::ReceiverStream;
 
@@ -38,7 +38,7 @@ impl TopicService for Publish {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{assert_res_error, assert_res_ok, dispatch_stream, Broadcaster, CommandRequest};
+    use crate::{Broadcaster, CommandRequest, assert_res_error, assert_res_ok, dispatch_stream};
     use futures::StreamExt;
     use std::{convert::TryInto, time::Duration};
     use tokio::time;
@@ -74,7 +74,7 @@ mod tests {
 
         // publish 时，这个 subscription 已经失效，所以会被删除
         let cmd = CommandRequest::new_publish("lobby", vec!["hello".into()]);
-        dispatch_stream(cmd, topic.clone());
+        let _ = dispatch_stream(cmd, topic.clone());
         time::sleep(Duration::from_millis(10)).await;
 
         // 如果再尝试删除，应该返回 KvError

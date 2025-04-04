@@ -143,11 +143,11 @@ mod tests {
         stream.send(&cmd).await?;
 
         // 使用 ProstStream 接收数据
-        if let Some(Ok(s)) = stream.next().await {
+        match stream.next().await { Some(Ok(s)) => {
             assert_eq!(s, cmd);
-        } else {
+        } _ => {
             unreachable!();
-        }
+        }}
         Ok(())
     }
 }

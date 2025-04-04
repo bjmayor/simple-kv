@@ -1,15 +1,14 @@
 use std::{env, str::FromStr};
 
 use anyhow::Result;
-use simple_kv::{start_server_with_config, RotationConfig, ServerConfig};
+use simple_kv::{RotationConfig, ServerConfig, start_server_with_config};
 use tokio::fs;
 use tracing::span;
 use tracing_subscriber::{
-    filter,
+    EnvFilter, filter,
     fmt::{self, format},
     layer::SubscriberExt,
     prelude::*,
-    EnvFilter,
 };
 
 #[tokio::main]
@@ -21,7 +20,9 @@ async fn main() -> Result<()> {
     let config: ServerConfig = toml::from_str(&config)?;
     let log = &config.log;
 
-    env::set_var("RUST_LOG", &log.log_level);
+    unsafe {
+        env::set_var("RUST_LOG", &log.log_level);
+    }
 
     let stdout_log = fmt::layer().compact();
 

@@ -5,3 +5,4 @@
 # Simple KV
 
 一个简单的 KV server 实现，配合 geektime 上我的 Rust 第一课。
+非常值得学习。看了 2 遍了。
