@@ -70,6 +70,15 @@ cargo bench
 publishing              time:   [4.3689 ms 4.4354 ms 4.5273 ms]
 
 ## 性能监控
+跑个 all in one 的 jager.
+
+```sh
+docker run -d --name jaeger \
+  -p 16686:16686 \
+  -p 4317:4317 \
+  -p 4318:4318 \
+  jaegertracing/all-in-one:latest
+	```
 
 ## ci/cd
 

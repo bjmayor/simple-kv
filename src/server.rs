@@ -1,6 +1,10 @@
 use std::{env, str::FromStr};
 
 use anyhow::Result;
+use opentelemetry::global;
+use opentelemetry::trace::{Tracer, TracerProvider as _};
+use opentelemetry_otlp::{SpanExporter, WithExportConfig};
+use opentelemetry_sdk::trace::{Sampler, SdkTracerProvider};
 use simple_kv::{RotationConfig, ServerConfig, start_server_with_config};
 use tokio::fs;
 use tracing::span;
@@ -22,14 +26,30 @@ async fn main() -> Result<()> {
 
     unsafe {
         env::set_var("RUST_LOG", &log.log_level);
+        // 设置 OTLP 端点
+        env::set_var("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4317");
+        // 设置服务名称
+        env::set_var("OTEL_SERVICE_NAME", "kv-server");
     }
 
     let stdout_log = fmt::layer().compact();
 
-    let tracer = opentelemetry_jaeger::new_pipeline()
-        .with_service_name("kv-server")
-        .install_simple()?;
-    let opentelemetry = tracing_opentelemetry::layer().with_tracer(tracer);
+    // 初始化 OTLP tracer
+    let exporter = SpanExporter::builder()
+        .with_tonic()
+        .with_protocol(opentelemetry_otlp::Protocol::Grpc)
+        .build()
+        .unwrap();
+    let provider = SdkTracerProvider::builder()
+        .with_sampler(Sampler::ParentBased(Box::new(Sampler::TraceIdRatioBased(
+            1.0,
+        ))))
+        .with_batch_exporter(exporter)
+        .build();
+    let tracer = provider.tracer("kv-server");
+
+    // 创建 OpenTelemetry 层
+    let telemetry = tracing_opentelemetry::layer().with_tracer(tracer);
 
     let file_appender = match log.rotation {
         RotationConfig::Hourly => tracing_appender::rolling::hourly(&log.path, "server.log"),
@@ -43,10 +63,6 @@ async fn main() -> Result<()> {
         .with_writer(non_blocking);
 
     let level = filter::LevelFilter::from_str(&log.log_level)?;
-    let jaeger_level = match log.enable_log_file {
-        true => level,
-        false => filter::LevelFilter::OFF,
-    };
 
     let log_file_level = match log.enable_log_file {
         true => level,
@@ -57,7 +73,7 @@ async fn main() -> Result<()> {
         .with(EnvFilter::from_default_env())
         .with(stdout_log)
         .with(fmt_layer.with_filter(log_file_level))
-        .with(opentelemetry.with_filter(jaeger_level))
+        .with(telemetry)
         .init();
 
     let root = span!(tracing::Level::INFO, "app_start");
