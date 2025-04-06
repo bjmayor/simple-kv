@@ -15,7 +15,7 @@ pub use service::*;
 pub use storage::*;
 
 use anyhow::Result;
-use s2n_quic::{client::Connect, Client, Server};
+use s2n_quic::{Client, Server, client::Connect};
 use tokio::net::{TcpListener, TcpStream};
 use tokio_rustls::client;
 use tokio_util::compat::FuturesAsyncReadCompatExt;

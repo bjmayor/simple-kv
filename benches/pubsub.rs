@@ -1,7 +1,7 @@
 use anyhow::Result;
 use criterion::{Criterion, criterion_group, criterion_main};
 use futures::StreamExt;
-use opentelemetry::trace::{Tracer, TracerProvider as _};
+use opentelemetry::trace::TracerProvider as _;
 use opentelemetry_otlp::{SpanExporter, WithExportConfig};
 use opentelemetry_sdk::trace::{Sampler, SdkTracerProvider};
 use rand::prelude::*;
@@ -38,7 +38,7 @@ async fn connect() -> Result<YamuxCtrl<TlsStream<TcpStream>>> {
     config.general.addr = addr.into();
 
     info!(addr, "connecting to server");
-    Ok(start_yamux_client_with_config(&config).await?)
+    start_yamux_client_with_config(&config).await
 }
 
 async fn start_subscribers(topic: &'static str) -> Result<()> {

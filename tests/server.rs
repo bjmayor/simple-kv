@@ -1,7 +1,7 @@
 use anyhow::Result;
 use simple_kv::{
-    start_server_with_config, start_yamux_client_with_config, AppStream, ClientConfig,
-    CommandRequest, ServerConfig, StorageConfig,
+    AppStream, ClientConfig, CommandRequest, ServerConfig, StorageConfig, start_server_with_config,
+    start_yamux_client_with_config,
 };
 use std::time::Duration;
 use tokio::time;

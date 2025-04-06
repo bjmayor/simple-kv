@@ -1,5 +1,5 @@
 use crate::{KvError, Kvpair, Storage, StorageIter, Value};
-use dashmap::{mapref::one::Ref, DashMap};
+use dashmap::{DashMap, mapref::one::Ref};
 
 /// 使用 DashMap 构建的 MemTable，实现了 Storage trait
 #[derive(Clone, Debug, Default)]

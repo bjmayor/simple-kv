@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use futures::{future, Future, TryStreamExt};
+use futures::{Future, TryStreamExt, future};
 use std::marker::PhantomData;
 use tokio::io::{AsyncRead, AsyncWrite};
 use tokio_util::compat::{Compat, FuturesAsyncReadCompatExt, TokioAsyncReadCompatExt};
@@ -65,7 +65,7 @@ where
 
         Self {
             ctrl,
-            _conn: PhantomData::default(),
+            _conn: PhantomData,
         }
     }
 }
@@ -90,11 +90,10 @@ mod tests {
 
     use super::*;
     use crate::{
-        assert_res_ok,
+        CommandRequest, KvError, MemTable, ProstServerStream, Service, ServiceInner, Storage,
+        TlsServerAcceptor, assert_res_ok,
         network::tls::tls_utils::{tls_acceptor, tls_connector},
         utils::DummyStream,
-        CommandRequest, KvError, MemTable, ProstServerStream, Service, ServiceInner, Storage,
-        TlsServerAcceptor,
     };
     use anyhow::Result;
     use tokio::net::{TcpListener, TcpStream};

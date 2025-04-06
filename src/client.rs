@@ -3,8 +3,8 @@ use std::time::Duration;
 use anyhow::Result;
 use futures::StreamExt;
 use simple_kv::{
-    start_quic_client_with_config, start_yamux_client_with_config, AppStream, ClientConfig,
-    CommandRequest, KvError, NetworkType, ProstClientStream,
+    AppStream, ClientConfig, CommandRequest, KvError, NetworkType, ProstClientStream,
+    start_quic_client_with_config, start_yamux_client_with_config,
 };
 use tokio::{
     io::{AsyncRead, AsyncWrite},

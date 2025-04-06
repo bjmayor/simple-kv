@@ -1,8 +1,7 @@
 use std::{env, str::FromStr};
 
 use anyhow::Result;
-use opentelemetry::global;
-use opentelemetry::trace::{Tracer, TracerProvider as _};
+use opentelemetry::trace::TracerProvider;
 use opentelemetry_otlp::{SpanExporter, WithExportConfig};
 use opentelemetry_sdk::trace::{Sampler, SdkTracerProvider};
 use simple_kv::{RotationConfig, ServerConfig, start_server_with_config};

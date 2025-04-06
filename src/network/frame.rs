@@ -2,7 +2,7 @@ use std::io::{Read, Write};
 
 use crate::{CommandRequest, CommandResponse, KvError};
 use bytes::{Buf, BufMut, BytesMut};
-use flate2::{read::GzDecoder, write::GzEncoder, Compression};
+use flate2::{Compression, read::GzDecoder, write::GzEncoder};
 use prost::Message;
 use tokio::io::{AsyncRead, AsyncReadExt};
 use tracing::debug;
@@ -116,7 +116,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{utils::DummyStream, Value};
+    use crate::{Value, utils::DummyStream};
     use bytes::Bytes;
 
     #[test]

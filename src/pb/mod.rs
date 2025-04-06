@@ -348,7 +348,7 @@ impl TryFrom<&CommandResponse> for i64 {
         if value.status != StatusCode::OK.as_u16() as u32 {
             return Err(KvError::ConvertError(value.format(), "CommandResponse"));
         }
-        match value.values.get(0) {
+        match value.values.first() {
             Some(v) => v.try_into(),
             None => Err(KvError::ConvertError(value.format(), "CommandResponse")),
         }

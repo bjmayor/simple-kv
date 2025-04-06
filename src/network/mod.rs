@@ -4,7 +4,7 @@ mod stream;
 mod stream_result;
 mod tls;
 
-pub use frame::{read_frame, FrameCoder};
+pub use frame::{FrameCoder, read_frame};
 pub use multiplex::{AppStream, QuicCtrl, YamuxCtrl};
 pub use stream::ProstStream;
 pub use stream_result::StreamResult;
@@ -144,7 +144,7 @@ mod tests {
     use std::net::SocketAddr;
 
     use super::*;
-    use crate::{assert_res_ok, MemTable, ServiceInner, Value};
+    use crate::{MemTable, ServiceInner, Value, assert_res_ok};
     use anyhow::Result;
     use bytes::Bytes;
     use tokio::net::{TcpListener, TcpStream};

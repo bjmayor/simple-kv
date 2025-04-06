@@ -44,7 +44,7 @@ fn create_cert(ca: &CA, domains: &[&str], cn: &str, is_client: bool) -> Result<C
     };
     let (cert, key) = generate_cert(
         ca,
-        domains.into_iter().map(|s| s.to_string()).collect(),
+        domains.iter().map(|s| s.to_string()).collect(),
         "CN",
         "Acme Inc.",
         cn,

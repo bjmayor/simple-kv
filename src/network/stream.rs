@@ -1,5 +1,5 @@
 use bytes::BytesMut;
-use futures::{ready, FutureExt, Sink, Stream};
+use futures::{FutureExt, Sink, Stream, ready};
 use std::{
     marker::PhantomData,
     pin::Pin,
@@ -7,7 +7,7 @@ use std::{
 };
 use tokio::io::{AsyncRead, AsyncWrite};
 
-use crate::{read_frame, FrameCoder, KvError};
+use crate::{FrameCoder, KvError, read_frame};
 
 /// 处理 KV server prost frame 的 stream
 pub struct ProstStream<S, In, Out> {
@@ -117,8 +117,8 @@ where
             written: 0,
             wbuf: BytesMut::new(),
             rbuf: BytesMut::new(),
-            _in: PhantomData::default(),
-            _out: PhantomData::default(),
+            _in: PhantomData,
+            _out: PhantomData,
         }
     }
 }
@@ -126,7 +126,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{utils::DummyStream, CommandRequest};
+    use crate::{CommandRequest, utils::DummyStream};
     use anyhow::Result;
     use futures::prelude::*;
 
@@ -143,11 +143,14 @@ mod tests {
         stream.send(&cmd).await?;
 
         // 使用 ProstStream 接收数据
-        match stream.next().await { Some(Ok(s)) => {
-            assert_eq!(s, cmd);
-        } _ => {
-            unreachable!();
-        }}
+        match stream.next().await {
+            Some(Ok(s)) => {
+                assert_eq!(s, cmd);
+            }
+            _ => {
+                unreachable!();
+            }
+        }
         Ok(())
     }
 }

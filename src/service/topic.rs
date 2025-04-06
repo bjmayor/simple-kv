@@ -1,7 +1,7 @@
 use dashmap::{DashMap, DashSet};
 use std::sync::{
-    atomic::{AtomicU32, Ordering},
     Arc,
+    atomic::{AtomicU32, Ordering},
 };
 use tokio::sync::mpsc;
 use tracing::{debug, info, instrument, warn};

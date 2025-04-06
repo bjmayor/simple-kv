@@ -81,7 +81,7 @@ docker run -d --name jaeger \
 	```
 
 ## ci/cd
-
+就是 github actions 的配置。看`.github/workflows`文件夹。
 # 参考
 
 [X.509](https://zh.wikipedia.org/wiki/X.509)
